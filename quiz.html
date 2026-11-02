@@ -1,0 +1,2641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  <title>Quiz Interativo | Emagreça sem Culpa</title>
+  <meta name="description"
+    content="Descubra qual é o seu perfil alimentar e receba um plano sob medida para emagrecer sem dietas radicais e sem culpa.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo/EC-logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Facebook Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      }; if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+    }
+      (window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1736680751016056');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1736680751016056&ev=PageView&noscript=1" alt="fb-pixel" />
+  </noscript>
+
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "x8jpab6od6");
+  </script>
+
+  <style>
+    /* ========================================
+       DESIGN TOKENS
+       ======================================== */
+    :root {
+      --rose: #E8526A;
+      --rose-light: #F28090;
+      --rose-dark: #C93A54;
+      --blush: #FDE8EC;
+      --cream: #FFF8F5;
+      --brown: #3D1A1E;
+      --brown-soft: #6B3A40;
+      --gold: #D4A054;
+      --white: #FFFFFF;
+      --gray: #8A7070;
+      --light-gray: #F5EFED;
+      --green: #2ECC71;
+      --green-light: #E8F8F0;
+      --font-family: 'DM Sans', sans-serif;
+      --font-display: 'Playfair Display', serif;
+    }
+
+    /* ========================================
+       RESET & BASE
+       ======================================== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--cream);
+      color: var(--brown);
+      overflow-x: hidden;
+      line-height: 1.6;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========================================
+       QUIZ SHELL
+       ======================================== */
+    .quiz-shell {
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 18px 60px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========================================
+       HEADER / BRAND
+       ======================================== */
+    .quiz-header {
+      text-align: center;
+      padding: 6px 0 14px;
+    }
+
+    .quiz-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      object-fit: cover;
+      margin-bottom: 6px;
+      box-shadow: 0 4px 15px rgba(232, 82, 106, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .quiz-brand {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--rose);
+      letter-spacing: 0.5px;
+    }
+
+    /* ========================================
+       PROGRESS BAR
+       ======================================== */
+    .progress-wrapper {
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .progress-step {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brown-soft);
+    }
+
+    .progress-percent {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--rose);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(138, 112, 112, 0.15);
+      border-radius: 100px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--rose) 0%, var(--rose-dark) 100%);
+      border-radius: 100px;
+      transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.4) 50%,
+          transparent 100%);
+      animation: shimmer 1.8s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    /* ========================================
+       SCREEN SYSTEM
+       ======================================== */
+    .screen {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .screen.slide-in-right {
+      animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .screen.slide-in-left {
+      animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .screen.fade-in {
+      animation: fadeIn 0.5s ease both;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(45px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-45px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ========================================
+       INTRO SCREEN
+       ======================================== */
+    .intro-screen {
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 0 28px;
+    }
+
+    .intro-badge {
+      display: inline-block;
+      background: var(--blush);
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(232, 82, 106, 0.18);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .intro-title {
+      font-family: var(--font-display);
+      font-size: clamp(25px, 6.8vw, 34px);
+      font-weight: 900;
+      line-height: 1.25;
+      color: var(--brown);
+      animation: fadeUp 0.5s 0.08s ease both;
+    }
+
+    .intro-title span {
+      color: var(--rose);
+    }
+
+    .intro-subtitle {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--brown-soft);
+      max-width: 440px;
+      animation: fadeUp 0.5s 0.14s ease both;
+    }
+
+    /* Social Proof Pill in Intro */
+    .intro-social-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      padding: 6px 16px 6px 8px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(61, 26, 30, 0.05);
+      border: 1px solid rgba(232, 82, 106, 0.12);
+      animation: fadeUp 0.5s 0.18s ease both;
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar-stack img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+      margin-left: -8px;
+    }
+
+    .avatar-stack img:first-child {
+      margin-left: 0;
+    }
+
+    .intro-social-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brown);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .intro-social-text .stars {
+      color: var(--gold);
+      font-size: 11px;
+    }
+
+    /* Name input block in intro */
+    .intro-name-box {
+      background: white;
+      border: 2px solid rgba(232, 82, 106, 0.18);
+      border-radius: 18px;
+      padding: 18px 20px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 4px 20px rgba(61, 26, 30, 0.04);
+      animation: fadeUp 0.5s 0.22s ease both;
+      text-align: left;
+    }
+
+    .intro-name-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brown);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .intro-name-input {
+      width: 100%;
+      background: var(--cream);
+      border: 2px solid rgba(138, 112, 112, 0.16);
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-family: var(--font-family);
+      font-size: 15px;
+      color: var(--brown);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .intro-name-input:focus {
+      border-color: var(--rose);
+      background: white;
+    }
+
+    .intro-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      animation: fadeUp 0.5s 0.26s ease both;
+    }
+
+    .intro-feature {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 7px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--brown-soft);
+      box-shadow: 0 2px 8px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.08);
+    }
+
+    .intro-feature .feat-icon {
+      font-size: 14px;
+    }
+
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+      color: white;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 17px 36px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 8px 30px rgba(232, 82, 106, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.5s 0.32s ease both, pulse 2.5s 1s ease-in-out infinite;
+      user-select: none;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px rgba(232, 82, 106, 0.45);
+    }
+
+    .btn-start:active {
+      transform: translateY(1px);
+      animation: none;
+    }
+
+    .btn-start .arrow {
+      font-size: 19px;
+      transition: transform 0.2s;
+    }
+
+    .btn-start:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 8px 30px rgba(232, 82, 106, 0.35);
+      }
+
+      50% {
+        box-shadow: 0 8px 40px rgba(232, 82, 106, 0.65);
+        transform: scale(1.015);
+      }
+    }
+
+    .intro-note {
+      font-size: 11px;
+      color: var(--gray);
+      animation: fadeUp 0.5s 0.36s ease both;
+    }
+
+    /* ========================================
+       QUESTION SCREEN
+       ======================================== */
+    .question-screen {
+      gap: 6px;
+    }
+
+    .question-emoji {
+      font-size: 38px;
+      text-align: center;
+      margin-bottom: 2px;
+      line-height: 1.1;
+    }
+
+    .bounceIn {
+      animation: bounceIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+
+      60% {
+        transform: scale(1.12);
+      }
+
+      80% {
+        transform: scale(0.95);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .question-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .question-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 5.2vw, 26px);
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: center;
+      color: var(--brown);
+      margin-bottom: 20px;
+    }
+
+    /* Micro Social Proof Snippet below question */
+    .question-micro-proof {
+      background: white;
+      border: 1px dashed rgba(232, 82, 106, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--brown-soft);
+      animation: fadeIn 0.4s ease both;
+    }
+
+    .question-micro-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .question-micro-quote {
+      font-style: italic;
+    }
+
+    .question-micro-author {
+      font-weight: 700;
+      color: var(--brown);
+      font-style: normal;
+      display: block;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .options-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      width: 100%;
+      background: white;
+      border: 2px solid rgba(138, 112, 112, 0.12);
+      border-radius: 16px;
+      padding: 15px 17px;
+      font-family: var(--font-family);
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--brown);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .option-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--blush) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .option-btn:hover {
+      border-color: var(--rose-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232, 82, 106, 0.1);
+    }
+
+    .option-btn:hover::before {
+      opacity: 1;
+    }
+
+    .option-btn:active {
+      transform: translateY(0);
+    }
+
+    .option-btn.selected {
+      border-color: var(--rose);
+      background: var(--blush);
+      box-shadow: 0 4px 18px rgba(232, 82, 106, 0.16);
+    }
+
+    .option-btn.selected .option-letter {
+      background: var(--rose);
+      color: white;
+      border-color: var(--rose);
+    }
+
+    .option-letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 2px solid rgba(138, 112, 112, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--gray);
+      flex-shrink: 0;
+      transition: all 0.22s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .option-text {
+      position: relative;
+      z-index: 1;
+      line-height: 1.45;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      font-family: var(--font-family);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      padding: 9px 13px;
+      border-radius: 12px;
+      transition: color 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .btn-back:hover {
+      color: var(--brown);
+      background: rgba(138, 112, 112, 0.08);
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+      color: white;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 14.5px;
+      padding: 12px 24px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(232, 82, 106, 0.28);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.4;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .btn-next.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .btn-next.enabled:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(232, 82, 106, 0.4);
+    }
+
+    .btn-next:active {
+      transform: translateY(1px);
+    }
+
+    /* ========================================
+       LOADING SCREEN
+       ======================================== */
+    .loading-screen {
+      justify-content: center;
+      align-items: center;
+      gap: 26px;
+      text-align: center;
+      padding: 46px 0;
+    }
+
+    .loading-visual {
+      position: relative;
+      width: 110px;
+      height: 110px;
+    }
+
+    .loading-ring {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 4px solid rgba(138, 112, 112, 0.15);
+      border-top-color: var(--rose);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-percent {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--rose);
+    }
+
+    .loading-title {
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--brown);
+    }
+
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: var(--gray);
+      transition: color 0.3s, opacity 0.3s;
+      opacity: 0.35;
+    }
+
+    .loading-step.active {
+      color: var(--brown);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .loading-step.done {
+      color: var(--green);
+      opacity: 1;
+    }
+
+    .loading-step-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(138, 112, 112, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .loading-step.active .loading-step-icon {
+      background: var(--blush);
+      color: var(--rose);
+    }
+
+    .loading-step.done .loading-step-icon {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    /* ========================================
+       RESULT SCREEN
+       ======================================== */
+    .result-screen {
+      gap: 0;
+      align-items: center;
+      text-align: center;
+      padding-top: 6px;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .result-badge {
+      display: inline-block;
+      background: var(--green-light);
+      color: #1e8449;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .result-greeting {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--rose);
+      margin-bottom: 4px;
+      animation: fadeUp 0.4s 0.05s ease both;
+    }
+
+    .result-profile-name {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 6.2vw, 30px);
+      font-weight: 900;
+      line-height: 1.25;
+      color: var(--brown);
+      margin-bottom: 14px;
+      animation: fadeUp 0.4s 0.08s ease both;
+    }
+
+    .result-profile-name span {
+      color: var(--rose);
+    }
+
+    .score-ring-wrapper {
+      margin-bottom: 18px;
+      animation: fadeUp 0.4s 0.12s ease both;
+    }
+
+    .score-ring {
+      width: 105px;
+      height: 105px;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .score-ring svg {
+      width: 105px;
+      height: 105px;
+      transform: rotate(-90deg);
+    }
+
+    .score-ring-bg {
+      fill: none;
+      stroke: rgba(138, 112, 112, 0.15);
+      stroke-width: 8;
+    }
+
+    .score-ring-fill {
+      fill: none;
+      stroke: var(--rose);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .score-ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-ring-value {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--rose);
+      line-height: 1;
+    }
+
+    .score-ring-label {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    .result-description {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--brown-soft);
+      max-width: 480px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s 0.16s ease both;
+    }
+
+    /* URGENCY COUNTDOWN BAR */
+    .urgency-timer-bar {
+      background: #FFF2F4;
+      border: 1px solid rgba(232, 82, 106, 0.3);
+      border-radius: 14px;
+      padding: 12px 16px;
+      width: 100%;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--brown);
+      animation: fadeUp 0.4s 0.2s ease both;
+    }
+
+    .timer-clock {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--rose-dark);
+      background: white;
+      padding: 3px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(232, 82, 106, 0.2);
+      letter-spacing: 1px;
+    }
+
+    /* COMPARATIVE TABLE (Sem vs Com o Método) */
+    .comparison-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 20px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.1);
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: left;
+      animation: fadeUp 0.4s 0.24s ease both;
+    }
+
+    .comparison-title {
+      font-family: var(--font-display);
+      font-size: 16.5px;
+      font-weight: 700;
+      color: var(--brown);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    .comparison-table th {
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .comparison-table th.col-bad {
+      color: var(--gray);
+      background: rgba(138, 112, 112, 0.06);
+      border-radius: 8px 0 0 8px;
+      width: 50%;
+    }
+
+    .comparison-table th.col-good {
+      color: var(--rose-dark);
+      background: var(--blush);
+      border-radius: 0 8px 8px 0;
+      width: 50%;
+    }
+
+    .comparison-table td {
+      padding: 9px 8px;
+      vertical-align: top;
+      line-height: 1.45;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-bad-item {
+      color: var(--gray);
+    }
+
+    .col-good-item {
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    /* Recommendation card */
+    .recommendation-card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px 18px;
+      box-shadow: 0 8px 30px rgba(61, 26, 30, 0.05);
+      border: 1px solid rgba(232, 82, 106, 0.08);
+      width: 100%;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s 0.28s ease both;
+      text-align: left;
+    }
+
+    .recommendation-card h3 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .rec-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 9px 0;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--brown-soft);
+    }
+
+    .rec-item+.rec-item {
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .rec-check {
+      width: 22px;
+      height: 22px;
+      background: var(--blush);
+      color: var(--rose);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    /* REAL RESULT EVIDENCE CARD (dep-site-hero.png) */
+    .result-evidence-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 16px;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.12);
+      text-align: center;
+      animation: fadeUp 0.4s 0.32s ease both;
+    }
+
+    .evidence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--green-light);
+      color: #1e8449;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 50px;
+      margin-bottom: 10px;
+    }
+
+    .evidence-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+
+    .evidence-img-wrapper {
+      background: var(--cream);
+      border-radius: 14px;
+      padding: 8px;
+      border: 1px solid rgba(138, 112, 112, 0.12);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .evidence-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 4px 14px rgba(61, 26, 30, 0.06);
+    }
+
+    .evidence-caption {
+      font-size: 11.5px;
+      color: var(--gray);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* Offer Box */
+    .result-offer {
+      background: linear-gradient(145deg, #FFF0F3 0%, #FDE8EC 100%);
+      border: 2px dashed var(--rose-light);
+      border-radius: 24px;
+      padding: 26px 20px 22px;
+      width: 100%;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s 0.36s ease both;
+      position: relative;
+    }
+
+    .offer-urgent-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--rose);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 12px;
+    }
+
+    .result-offer-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--brown);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    /* Product Cover Visual inside Result */
+    .result-book-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 10px 0 14px;
+    }
+
+    .result-book-img {
+      width: 82px;
+      height: auto;
+      border-radius: 4px 8px 8px 4px;
+      box-shadow: 4px 6px 18px rgba(0, 0, 0, 0.15);
+      transform: rotate(-3deg);
+      transition: transform 0.3s ease;
+    }
+
+    .result-book-img:hover {
+      transform: rotate(0deg) scale(1.04);
+    }
+
+    .result-book-highlights {
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--brown-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .result-book-highlights span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-book-highlights strong {
+      color: var(--rose-dark);
+    }
+
+    .result-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .result-price-old {
+      font-size: 16px;
+      color: var(--gray);
+      text-decoration: line-through;
+    }
+
+    .result-price-new {
+      font-family: var(--font-display);
+      font-size: 52px;
+      font-weight: 900;
+      color: var(--rose);
+      line-height: 1;
+    }
+
+    .result-price-new sup {
+      font-size: 23px;
+      vertical-align: top;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    .result-price-note {
+      font-size: 13px;
+      color: var(--brown-soft);
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+
+    .btn-cta {
+      display: block;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+      color: white;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 17px 26px;
+      border-radius: 16px;
+      text-decoration: none;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(232, 82, 106, 0.35);
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulse 2.5s 0.8s ease-in-out infinite;
+      user-select: none;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px rgba(232, 82, 106, 0.45);
+    }
+
+    .btn-cta:active {
+      transform: translateY(1px);
+      animation: none;
+    }
+
+    .result-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 11.5px;
+      color: var(--gray);
+    }
+
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* ORDER BUMP SHOWCASE */
+    .result-bump-showcase {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 16px;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.1);
+      text-align: left;
+      animation: fadeUp 0.4s 0.4s ease both;
+    }
+
+    .bump-showcase-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .bump-showcase-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brown);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bump-showcase-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--blush);
+      color: var(--rose-dark);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .bump-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .bump-card {
+      background: var(--cream);
+      border: 1px solid rgba(138, 112, 112, 0.12);
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bump-cover-img {
+      width: 75px;
+      height: 95px;
+      object-fit: cover;
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 8px;
+    }
+
+    .bump-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brown);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .bump-tag {
+      font-size: 10px;
+      color: #27ae60;
+      font-weight: 600;
+      margin-top: auto;
+    }
+
+    /* FULL TESTIMONIALS SECTION */
+    .result-testimonials-section {
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: left;
+      animation: fadeUp 0.4s 0.44s ease both;
+    }
+
+    .testimonials-section-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--brown);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .testimonials-section-sub {
+      font-size: 12.5px;
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .testi-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .testi-card-item {
+      background: white;
+      border-radius: 18px;
+      padding: 18px 18px;
+      box-shadow: 0 4px 18px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(138, 112, 112, 0.08);
+      position: relative;
+    }
+
+    .testi-card-quote {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--brown-soft);
+      font-style: italic;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testi-card-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid var(--light-gray);
+      padding-top: 10px;
+    }
+
+    .testi-card-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(232, 82, 106, 0.2);
+    }
+
+    .testi-card-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brown);
+    }
+
+    .testi-card-info {
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .testi-card-stars {
+      color: var(--gold);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    /* RATING SUMMARY PILL */
+    .rating-summary-pill {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 2px 12px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.12);
+    }
+
+    .rating-big-score {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--brown);
+      line-height: 1;
+    }
+
+    .rating-pill-details {
+      text-align: left;
+      font-size: 11.5px;
+      color: var(--brown-soft);
+      line-height: 1.35;
+    }
+
+    .rating-pill-details .stars {
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    /* CREATOR AUTHORITY BOX */
+    .result-creator-box {
+      background: white;
+      border-radius: 20px;
+      padding: 20px 18px;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 18px rgba(61, 26, 30, 0.04);
+      border: 1px solid rgba(232, 82, 106, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+      animation: fadeUp 0.4s 0.48s ease both;
+    }
+
+    .creator-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 14px rgba(232, 82, 106, 0.25);
+      border: 2px solid white;
+      flex-shrink: 0;
+    }
+
+    .creator-info h4 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 2px;
+    }
+
+    .creator-role {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--rose);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .creator-quote {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--brown-soft);
+      font-style: italic;
+    }
+
+    /* Guarantee */
+    .result-guarantee {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #F0FFF4;
+      border: 1px solid #A8E6B0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      width: 100%;
+      text-align: left;
+      animation: fadeUp 0.4s 0.52s ease both;
+    }
+
+    .result-guarantee-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .result-guarantee-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--brown-soft);
+    }
+
+    .result-guarantee-text strong {
+      color: var(--brown);
+    }
+
+    /* Footer Note */
+    .quiz-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 26px;
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       RESPONSIVE & ACCESSIBILITY
+       ======================================== */
+    @media (min-width: 768px) {
+      .quiz-shell {
+        padding: 32px 28px 80px;
+      }
+
+      .question-title {
+        font-size: 27px;
+      }
+
+      .option-btn {
+        padding: 17px 22px;
+      }
+
+      .result-profile-name {
+        font-size: 32px;
+      }
+
+      .result-offer {
+        padding: 32px 26px 26px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="quiz-shell">
+
+    <!-- HEADER -->
+    <header class="quiz-header">
+      <img src="logo/EC-logo.png" alt="Emagreça sem Culpa" class="quiz-logo" width="50" height="50">
+      <div class="quiz-brand">Emagreça sem Culpa</div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-wrapper" id="progressWrapper">
+      <div class="progress-info">
+        <span class="progress-step" id="progressStep">Pergunta 1 de 7</span>
+        <span class="progress-percent" id="progressPercent">14%</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- ==================== INTRO SCREEN ==================== -->
+    <div class="screen intro-screen active" id="screenIntro">
+      <span class="intro-badge">✨ Quiz Exclusivo • 1 minuto</span>
+
+      <h1 class="intro-title">
+        Descubra seu <span>perfil alimentar</span> e comece a emagrecer sem culpa
+      </h1>
+
+      <p class="intro-subtitle">
+        Responda 7 perguntas rápidas para receber um diagnóstico personalizado e entender qual é o passo a passo ideal para o seu corpo.
+      </p>
+
+      <!-- Social Proof Pill in Intro -->
+      <div class="intro-social-pill">
+        <div class="avatar-stack">
+          <img src="logo/depoimento-mariana.png" alt="Mariana S." width="28" height="28">
+          <img src="logo/depoimento-fernanda.png" alt="Fernanda R." width="28" height="28">
+          <img src="logo/depoimento-claudia.png" alt="Claudia M." width="28" height="28">
+        </div>
+        <div class="intro-social-text">
+          <span class="stars">★★★★★</span>
+          <span>4.7/5 • +2.400 mulheres</span>
+        </div>
+      </div>
+
+      <!-- Campo de Nome Personalizado -->
+      <div class="intro-name-box">
+        <label for="userNameInput" class="intro-name-label">
+          <span>🌸</span> Como podemos te chamar?
+        </label>
+        <input type="text" id="userNameInput" class="intro-name-input" placeholder="Digite seu primeiro nome (opcional)" maxlength="30" autocomplete="given-name">
+      </div>
+
+      <div class="intro-features">
+        <div class="intro-feature"><span class="feat-icon">⏱️</span> Menos de 1 min</div>
+        <div class="intro-feature"><span class="feat-icon">🔒</span> 100% gratuito</div>
+        <div class="intro-feature"><span class="feat-icon">🎯</span> Resultado na hora</div>
+      </div>
+
+      <button class="btn-start" id="btnStart" type="button">
+        COMEÇAR O QUIZ
+        <span class="arrow">→</span>
+      </button>
+
+      <p class="intro-note">Mais de 2.400 mulheres já descobriram seu perfil</p>
+    </div>
+
+    <!-- ==================== QUESTION SCREEN ==================== -->
+    <div class="screen question-screen" id="screenQuestion">
+      <div class="question-emoji" id="qEmoji"></div>
+      <div class="question-label" id="qLabel"></div>
+      <h2 class="question-title" id="qTitle"></h2>
+
+      <!-- Micro Social Proof below question (dynamic) -->
+      <div class="question-micro-proof" id="qMicroProof">
+        <img src="" alt="" class="question-micro-avatar" id="qMicroAvatar" width="32" height="32">
+        <div>
+          <span class="question-micro-quote" id="qMicroQuote"></span>
+          <span class="question-micro-author" id="qMicroAuthor"></span>
+        </div>
+      </div>
+
+      <ul class="options-list" id="qOptions"></ul>
+      <div class="nav-row">
+        <button class="btn-back" id="btnBack" type="button">← Voltar</button>
+        <button class="btn-next" id="btnNext" type="button">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- ==================== LOADING SCREEN ==================== -->
+    <div class="screen loading-screen" id="screenLoading">
+      <div class="loading-visual">
+        <div class="loading-ring"></div>
+        <div class="loading-percent" id="loadingPercent">0%</div>
+      </div>
+      <h3 class="loading-title" id="loadingTitle">Analisando suas respostas...</h3>
+      <div class="loading-steps">
+        <div class="loading-step" id="loadStep1">
+          <div class="loading-step-icon">📋</div>
+          <span>Verificando seu perfil alimentar</span>
+        </div>
+        <div class="loading-step" id="loadStep2">
+          <div class="loading-step-icon">🔍</div>
+          <span>Analisando suas maiores dificuldades</span>
+        </div>
+        <div class="loading-step" id="loadStep3">
+          <div class="loading-step-icon">💡</div>
+          <span>Gerando recomendações personalizadas</span>
+        </div>
+        <div class="loading-step" id="loadStep4">
+          <div class="loading-step-icon">✅</div>
+          <span>Montando seu plano ideal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== RESULT SCREEN ==================== -->
+    <div class="screen result-screen" id="screenResult">
+      <canvas id="confettiCanvas"></canvas>
+
+      <div class="result-badge" id="resultBadge">Diagnóstico concluído</div>
+
+      <div class="result-greeting" id="resultGreeting"></div>
+      <h2 class="result-profile-name" id="resultTitle"></h2>
+
+      <!-- Score Ring -->
+      <div class="score-ring-wrapper">
+        <div class="score-ring">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="score-ring-bg" cx="50" cy="50" r="45"></circle>
+            <circle class="score-ring-fill" id="scoreRingFill" cx="50" cy="50" r="45"></circle>
+          </svg>
+          <div class="score-ring-text">
+            <span class="score-ring-value" id="scoreValue">0%</span>
+            <span class="score-ring-label">compatibilidade</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="result-description" id="resultDescription"></p>
+
+      <!-- URGENCY COUNTDOWN -->
+      <div class="urgency-timer-bar">
+        <span>⏰ Condição de lançamento reservada por:</span>
+        <span class="timer-clock" id="timerClock">14:59</span>
+      </div>
+
+      <!-- COMPARATIVE TABLE -->
+      <div class="comparison-card">
+        <h4 class="comparison-title">O que muda na sua rotina a partir de hoje:</h4>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="col-bad">❌ Sem o Método</th>
+              <th class="col-good">✅ Com o Método</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-bad-item">Dietas radicais e passar fome</td>
+              <td class="col-good-item">Alimentação saborosa e inteligente</td>
+            </tr>
+            <tr>
+              <td class="col-bad-item">Culpa a cada refeição e desânimo</td>
+              <td class="col-good-item">Paz com o espelho e leveza diária</td>
+            </tr>
+            <tr>
+              <td class="col-bad-item">Receitas caras e difíceis</td>
+              <td class="col-good-item">Pratos simples prontos em 15 min</td>
+            </tr>
+            <tr>
+              <td class="col-bad-item">Efeito sanfona repetitivo</td>
+              <td class="col-good-item">Constância real que cabe na rotina</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recommendation Card -->
+      <div class="recommendation-card" id="resultRecommendations">
+        <h3 id="recHeading">Seu plano sob medida inclui:</h3>
+        <div id="recItems"></div>
+      </div>
+
+      <!-- REAL RESULT EVIDENCE CARD (dep-site-hero.png) -->
+      <div class="result-evidence-card">
+        <div class="evidence-badge">💬 Exemplo Real de Resultado</div>
+        <h4 class="evidence-title">Veja o que acontece quando a culpa é deixada de lado:</h4>
+        <div class="evidence-img-wrapper">
+          <img src="dep-site-hero.png" alt="Depoimento real de quem aplicou o método" class="evidence-img" loading="lazy">
+        </div>
+        <p class="evidence-caption">
+          Mensagem real enviada por uma aluna que começou com pequenos ajustes no dia a dia.
+        </p>
+      </div>
+
+      <!-- Offer Card -->
+      <div class="result-offer">
+        <div class="offer-urgent-badge">🔥 OFERTA DE LANÇAMENTO</div>
+        <div class="result-offer-title">Método EMAGRECIMENTO SEM CULPA</div>
+
+        <!-- Book Mockup + Highlights -->
+        <div class="result-book-visual">
+          <img src="logo/capa-ebook.png" alt="Capa do E-book Emagrecimento sem Culpa" class="result-book-img"
+            width="82" height="118" loading="lazy">
+          <div class="result-book-highlights">
+            <span>⚡ <strong>Acesso imediato</strong> no seu e-mail</span>
+            <span>📖 Guia prático passo a passo</span>
+            <span>🥗 6 receitas rápidas e saborosas</span>
+            <span>🚫 Sem passar fome ou cortar tudo</span>
+          </div>
+        </div>
+
+        <div class="result-price-row">
+          <span class="result-price-old">De R$ 47,00</span>
+          <span class="result-price-new"><sup>R$</sup>9<sup>,90</sup></span>
+        </div>
+        <div class="result-price-note">pagamento único • sem mensalidade</div>
+
+        <a href="https://pay.hotmart.com/Y106402714O?checkoutMode=10"
+          class="btn-cta" target="_blank" rel="noopener noreferrer" id="btnCTA">
+          QUERO MEU MÉTODO POR R$9,90
+        </a>
+
+        <div class="result-trust">
+          <span class="trust-badge">🔒 Pagamento 100% seguro</span>
+          <span>•</span>
+          <span class="trust-badge">⚡ Acesso imediato</span>
+          <span>•</span>
+          <span class="trust-badge">🛡️ Garantia de 7 dias</span>
+        </div>
+      </div>
+
+      <!-- ORDER BUMP SHOWCASE -->
+      <div class="result-bump-showcase">
+        <div class="bump-showcase-header">
+          <div class="bump-showcase-title">
+            <span>🎁</span> Materiais Extras Disponíveis no Checkout
+          </div>
+          <span class="bump-showcase-badge">OPCIONAIS</span>
+        </div>
+        <div class="bump-grid">
+          <div class="bump-card">
+            <img src="logo/order-bump-compras.png" alt="Lista de Compras Fit" class="bump-cover-img" width="75" height="95" loading="lazy">
+            <div class="bump-name">Lista de Compras Semanal Fit</div>
+            <div class="bump-tag">Adicione no checkout</div>
+          </div>
+          <div class="bump-card">
+            <img src="logo/order-bump-substituicoes.png" alt="Guia de Substituições" class="bump-cover-img" width="75" height="95" loading="lazy">
+            <div class="bump-name">Guia de Substituições Inteligentes</div>
+            <div class="bump-tag">Adicione no checkout</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL TESTIMONIALS SECTION -->
+      <div class="result-testimonials-section">
+        <h3 class="testimonials-section-title">O que dizem as mulheres que já aplicaram:</h3>
+        <p class="testimonials-section-sub">Relatos reais de quem transformou a relação com a alimentação</p>
+
+        <div class="testi-cards-list">
+          <!-- Mariana S. -->
+          <div class="testi-card-item">
+            <p class="testi-card-quote">
+              "Em poucos dias já percebi diferença na forma como eu me sentia. Não é uma dieta impossível — é algo que realmente dá para seguir no dia a dia sem sofrer."
+            </p>
+            <div class="testi-card-author">
+              <img src="logo/depoimento-mariana.png" alt="Mariana S." class="testi-card-avatar" width="40" height="40" loading="lazy">
+              <div>
+                <div class="testi-card-name">Mariana S.</div>
+                <div class="testi-card-info">42 anos • São Paulo</div>
+                <div class="testi-card-stars">★★★★★</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fernanda R. -->
+          <div class="testi-card-item">
+            <p class="testi-card-quote">
+              "Me ajudou a organizar melhor minha alimentação sem aquela sensação de culpa o tempo todo. Finalmente consigo manter uma rotina sem desistir na primeira semana."
+            </p>
+            <div class="testi-card-author">
+              <img src="logo/depoimento-fernanda.png" alt="Fernanda R." class="testi-card-avatar" width="40" height="40" loading="lazy">
+              <div>
+                <div class="testi-card-name">Fernanda R.</div>
+                <div class="testi-card-info">48 anos • Belo Horizonte</div>
+                <div class="testi-card-stars">★★★★★</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Claudia M. -->
+          <div class="testi-card-item">
+            <p class="testi-card-quote">
+              "Eu precisava de algo mais leve, sem promessa milagrosa. Com as orientações do método, finalmente consegui manter uma rotina alimentar por mais tempo do que qualquer dieta que já fiz."
+            </p>
+            <div class="testi-card-author">
+              <img src="logo/depoimento-claudia.png" alt="Claudia M." class="testi-card-avatar" width="40" height="40" loading="lazy">
+              <div>
+                <div class="testi-card-name">Claudia M.</div>
+                <div class="testi-card-info">55 anos • Recife</div>
+                <div class="testi-card-stars">★★★★★</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating Summary Pill -->
+        <div class="rating-summary-pill">
+          <div class="rating-big-score">4.7</div>
+          <div class="rating-pill-details">
+            <div class="stars">★★★★★</div>
+            <div>Nota média baseada no feedback de compradoras reais</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATOR AUTHORITY BOX -->
+      <div class="result-creator-box">
+        <img src="logo/criadora.jpg" alt="Camila Silveira" class="creator-avatar" width="68" height="68" loading="lazy">
+        <div class="creator-info">
+          <h4>Camila Silveira</h4>
+          <span class="creator-role">Criadora do Método Emagreça sem Culpa</span>
+          <p class="creator-quote">
+            "Eu não criei mais uma dieta impossível. Criei o caminho simples e acolhedor que transformou a minha relação com o corpo — e agora vai transformar a sua."
+          </p>
+        </div>
+      </div>
+
+      <!-- Guarantee -->
+      <div class="result-guarantee">
+        <div class="result-guarantee-icon">🛡️</div>
+        <div class="result-guarantee-text">
+          <strong>Garantia Blindada de 7 Dias:</strong> se você achar que o método não é para você, devolvemos 100% do seu dinheiro com apenas um clique. Risco zero.
+        </div>
+      </div>
+
+      <!-- Footer Note -->
+      <div class="quiz-footer">
+        © 2025 Emagrecimento sem Culpa • Todos os direitos reservados.<br>
+        Este produto não substitui acompanhamento médico ou nutricional.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================
+       QUIZ JAVASCRIPT LOGIC
+       ======================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ====== USER STATE ====== */
+      let userName = '';
+
+      /* ====== QUESTIONS DATA (PROGRESSIVE COMMITMENT) ====== */
+      const questions = [
+        {
+          emoji: '🎂',
+          label: 'Faixa etária',
+          title: 'Qual é a sua faixa de idade?',
+          options: [
+            { text: '20 a 29 anos', value: 2 },
+            { text: '30 a 39 anos', value: 3 },
+            { text: '40 a 49 anos', value: 4 },
+            { text: '50 anos ou mais', value: 4 },
+          ],
+        },
+        {
+          emoji: '🎯',
+          label: 'Sua meta',
+          title: 'Qual é o seu objetivo de peso hoje?',
+          options: [
+            { text: 'Eliminar de 3 a 5 kg (desinchar e desinflamar)', value: 2 },
+            { text: 'Eliminar de 6 a 10 kg (voltar a usar minhas roupas favoritas)', value: 3 },
+            { text: 'Eliminar mais de 10 kg (transformação profunda de saúde)', value: 4 },
+            { text: 'Manter o peso com leveza e sem efeito sanfona', value: 2 },
+          ],
+        },
+        {
+          emoji: '🔄',
+          label: 'Histórico',
+          title: 'Quantas dietas você já tentou fazer e acabou desistindo?',
+          microProof: {
+            avatar: 'logo/depoimento-fernanda.png',
+            quote: '"Eu sempre começava na segunda e desistia na quarta, até entender que o erro era a dieta radical."',
+            author: 'Fernanda R., 48 anos'
+          },
+          options: [
+            { text: 'Muitas — low carb, jejum, detox... perdi as contas', value: 4 },
+            { text: 'Algumas vezes, mas sempre desisto na primeira semana', value: 3 },
+            { text: 'Poucas vezes, porque acho tudo radical demais', value: 2 },
+            { text: 'Nunca segui uma dieta específica', value: 1 },
+          ],
+        },
+        {
+          emoji: '😔',
+          label: 'Sentimentos',
+          title: 'Você costuma sentir culpa depois de comer algo fora do planejado?',
+          microProof: {
+            avatar: 'logo/depoimento-mariana.png',
+            quote: '"O maior alívio foi parar de me sentir um fracasso cada vez que comia um doce."',
+            author: 'Mariana S., 42 anos'
+          },
+          options: [
+            { text: 'Sempre — sinto que estraguei tudo e acabo exagerando mais', value: 4 },
+            { text: 'Na maioria das vezes fico chateada comigo mesma', value: 3 },
+            { text: 'Às vezes, dependendo do quanto comi', value: 2 },
+            { text: 'Raramente me sinto culpada', value: 1 },
+          ],
+        },
+        {
+          emoji: '⏰',
+          label: 'Dia a dia',
+          title: 'Como é o seu tempo disponível para cozinhar?',
+          options: [
+            { text: 'Super corrido — preciso de refeições práticas e fáceis', value: 4 },
+            { text: 'Consigo cozinhar se não exigir ingredientes complicados', value: 3 },
+            { text: 'Tenho algum tempo, mas falta planejamento', value: 2 },
+            { text: 'Tenho bastante tempo disponível', value: 1 },
+          ],
+        },
+        {
+          emoji: '👩',
+          label: 'Seu corpo',
+          title: 'Você sente que o seu corpo mudou e perder peso ficou mais difícil?',
+          microProof: {
+            avatar: 'logo/depoimento-claudia.png',
+            quote: '"Aos 55 anos achei que não tinha mais jeito. Com orientações certas consegui voltar a desinchar."',
+            author: 'Claudia M., 55 anos'
+          },
+          options: [
+            { text: 'Sim, sinto o metabolismo lento e retenção constante', value: 4 },
+            { text: 'Sim, sinto mais inchaço e cansaço no dia a dia', value: 3 },
+            { text: 'Um pouco, mas ainda consigo notar mudanças', value: 2 },
+            { text: 'Não sinto grande diferença', value: 1 },
+          ],
+        },
+        {
+          emoji: '💡',
+          label: 'Disposição',
+          title: 'Se houvesse um método simples por R$ 9,90, você começaria hoje?',
+          options: [
+            { text: 'Com certeza! É exatamente o recomeço que estou buscando', value: 4 },
+            { text: 'Sim, se for realmente prático e direto ao ponto', value: 3 },
+            { text: 'Gostaria de ver como funciona primeiro', value: 2 },
+            { text: 'Ainda estou em dúvida', value: 1 },
+          ],
+        },
+      ];
+
+      const totalQuestions = questions.length;
+      let currentQ = 0;
+      let answers = new Array(totalQuestions).fill(null);
+      let autoAdvanceTimer = null;
+      let countdownInterval = null;
+
+      /* ====== DOM REFS ====== */
+      const $ = id => document.getElementById(id);
+      const screenIntro = $('screenIntro');
+      const screenQuestion = $('screenQuestion');
+      const screenLoading = $('screenLoading');
+      const screenResult = $('screenResult');
+
+      const userNameInput = $('userNameInput');
+      const progressWrapper = $('progressWrapper');
+      const progressStep = $('progressStep');
+      const progressPercent = $('progressPercent');
+      const progressFill = $('progressFill');
+
+      const qEmoji = $('qEmoji');
+      const qLabel = $('qLabel');
+      const qTitle = $('qTitle');
+      const qMicroProof = $('qMicroProof');
+      const qMicroAvatar = $('qMicroAvatar');
+      const qMicroQuote = $('qMicroQuote');
+      const qMicroAuthor = $('qMicroAuthor');
+
+      const qOptions = $('qOptions');
+      const btnBack = $('btnBack');
+      const btnNext = $('btnNext');
+      const btnCTA = $('btnCTA');
+      const timerClock = $('timerClock');
+
+      /* ====== UTM & QUERY PARAMETERS PRESERVATION ====== */
+      function preserveUTMParameters() {
+        const currentParams = new URLSearchParams(window.location.search);
+        if (!currentParams.toString() || !btnCTA) return;
+
+        try {
+          const ctaUrl = new URL(btnCTA.href);
+          currentParams.forEach((value, key) => {
+            ctaUrl.searchParams.set(key, value);
+          });
+          btnCTA.href = ctaUrl.toString();
+        } catch (e) {
+          const sep = btnCTA.href.includes('?') ? '&' : '?';
+          btnCTA.href += sep + currentParams.toString();
+        }
+      }
+
+      /* ====== SCREEN CONTROLLER ====== */
+      function showScreen(screen, anim) {
+        if (autoAdvanceTimer) {
+          clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+
+        [screenIntro, screenQuestion, screenLoading, screenResult].forEach(s => {
+          s.classList.remove('active', 'slide-in-right', 'slide-in-left', 'fade-in');
+        });
+
+        void screen.offsetWidth;
+        screen.classList.add('active');
+        if (anim) screen.classList.add(anim);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* ====== PROGRESS CONTROLLER ====== */
+      function updateProgress() {
+        const pct = Math.round(((currentQ + 1) / totalQuestions) * 100);
+        progressStep.textContent = `Pergunta ${currentQ + 1} de ${totalQuestions}`;
+        progressPercent.textContent = pct + '%';
+        progressFill.style.width = pct + '%';
+
+        const track = progressWrapper.querySelector('.progress-track');
+        if (track) track.setAttribute('aria-valuenow', pct);
+      }
+
+      /* ====== RENDER QUESTION ====== */
+      function renderQuestion() {
+        const q = questions[currentQ];
+        qEmoji.textContent = q.emoji;
+        qLabel.textContent = q.label;
+
+        // Personalize question title with user name if available
+        let titleText = q.title;
+        if (userName && (currentQ === 2 || currentQ === 5 || currentQ === 6)) {
+          titleText = `${userName}, ${titleText.charAt(0).toLowerCase() + titleText.slice(1)}`;
+        }
+        qTitle.textContent = titleText;
+
+        // Render micro proof if available
+        if (q.microProof) {
+          qMicroAvatar.src = q.microProof.avatar;
+          qMicroAvatar.alt = q.microProof.author;
+          qMicroQuote.textContent = q.microProof.quote;
+          qMicroAuthor.textContent = `— ${q.microProof.author}`;
+          qMicroProof.style.display = 'flex';
+        } else {
+          qMicroProof.style.display = 'none';
+        }
+
+        qEmoji.classList.remove('bounceIn');
+        void qEmoji.offsetWidth;
+        qEmoji.classList.add('bounceIn');
+
+        const letters = ['A', 'B', 'C', 'D'];
+        qOptions.innerHTML = '';
+
+        q.options.forEach((opt, i) => {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.className = 'option-btn' + (answers[currentQ] === i ? ' selected' : '');
+          btn.type = 'button';
+          btn.innerHTML = `
+            <span class="option-letter">${letters[i]}</span>
+            <span class="option-text">${opt.text}</span>
+          `;
+          btn.addEventListener('click', () => selectOption(i));
+          li.appendChild(btn);
+          qOptions.appendChild(li);
+        });
+
+        btnBack.style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+        updateNextBtn();
+        updateProgress();
+      }
+
+      /* ====== OPTION SELECTION ====== */
+      function selectOption(index) {
+        if (autoAdvanceTimer) {
+          clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+
+        answers[currentQ] = index;
+
+        const btns = qOptions.querySelectorAll('.option-btn');
+        btns.forEach((b, i) => b.classList.toggle('selected', i === index));
+
+        updateNextBtn();
+
+        autoAdvanceTimer = setTimeout(() => {
+          autoAdvanceTimer = null;
+          goNext();
+        }, 400);
+      }
+
+      function updateNextBtn() {
+        const isLast = currentQ === totalQuestions - 1;
+        btnNext.textContent = isLast ? 'Ver resultado →' : 'Próxima →';
+        if (answers[currentQ] !== null) {
+          btnNext.classList.add('enabled');
+        } else {
+          btnNext.classList.remove('enabled');
+        }
+      }
+
+      function goNext() {
+        if (autoAdvanceTimer) {
+          clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+
+        if (answers[currentQ] === null) return;
+
+        if (currentQ < totalQuestions - 1) {
+          currentQ++;
+          showScreen(screenQuestion, 'slide-in-right');
+          renderQuestion();
+        } else {
+          showLoading();
+        }
+      }
+
+      function goBack() {
+        if (autoAdvanceTimer) {
+          clearTimeout(autoAdvanceTimer);
+          autoAdvanceTimer = null;
+        }
+
+        if (currentQ > 0) {
+          currentQ--;
+          showScreen(screenQuestion, 'slide-in-left');
+          renderQuestion();
+        } else {
+          progressWrapper.style.display = 'none';
+          showScreen(screenIntro, 'slide-in-left');
+        }
+      }
+
+      /* ====== LOADING SCREEN ====== */
+      function showLoading() {
+        progressWrapper.style.display = 'none';
+        showScreen(screenLoading, 'fade-in');
+
+        const loadingTitle = $('loadingTitle');
+        if (userName) {
+          loadingTitle.textContent = `Analisando as respostas de ${userName}...`;
+        } else {
+          loadingTitle.textContent = 'Analisando suas respostas...';
+        }
+
+        const percentEl = $('loadingPercent');
+        const steps = [
+          $('loadStep1'),
+          $('loadStep2'),
+          $('loadStep3'),
+          $('loadStep4'),
+        ];
+
+        let pct = 0;
+        let stepIndex = 0;
+        const stepThresholds = [25, 50, 75, 100];
+
+        steps.forEach(s => s.classList.remove('active', 'done'));
+
+        const interval = setInterval(() => {
+          pct += 1;
+          percentEl.textContent = pct + '%';
+
+          if (stepIndex < steps.length) {
+            steps[stepIndex].classList.add('active');
+            if (pct >= stepThresholds[stepIndex]) {
+              steps[stepIndex].classList.remove('active');
+              steps[stepIndex].classList.add('done');
+              stepIndex++;
+              if (stepIndex < steps.length) {
+                steps[stepIndex].classList.add('active');
+              }
+            }
+          }
+
+          if (pct >= 100) {
+            clearInterval(interval);
+            setTimeout(showResult, 450);
+          }
+        }, 30);
+      }
+
+      /* ====== RESULT SCREEN ====== */
+      function showResult() {
+        let totalScore = 0;
+        const maxScore = totalQuestions * 4;
+        answers.forEach((ansIdx, qIdx) => {
+          if (ansIdx !== null) {
+            totalScore += questions[qIdx].options[ansIdx].value;
+          }
+        });
+
+        const rawPct = totalScore / maxScore;
+        const percentage = Math.min(98, Math.max(84, Math.round(82 + rawPct * 16)));
+
+        let profile, description, badge, recommendations;
+
+        if (totalScore >= 21) {
+          profile = 'Perfil: <span>Urgência de Recomeço com Leveza</span>';
+          badge = '🎯 98% de Compatibilidade';
+          description = 'Suas respostas revelam que o ciclo de restrição e culpa está te esgotando emocionalmente. Você não precisa de outra dieta que castiga — você precisa de organização simples, acolhimento e uma rotina alimentar realista que você consiga sustentar.';
+          recommendations = [
+            'Como quebrar o ciclo de culpa logo na primeira refeição',
+            'Cardápio prático sem ingredientes caros ou difíceis',
+            'Alimentos estratégicos que controlam a compulsão por doces',
+            'Como o corpo feminino responde após os 30 anos e o que fazer',
+            '6 receitas fáceis para fazer em menos de 15 minutos',
+          ];
+        } else if (totalScore >= 16) {
+          profile = 'Perfil: <span>Necessidade de Praticidade e Constância</span>';
+          badge = '🌟 92% de Compatibilidade';
+          description = 'Você quer se alimentar melhor, mas a correria do dia a dia e a falta de um método simples acabam travando o seu progresso. O Método Emagreça sem Culpa vai te dar a clareza e as substituições inteligentes que faltavam na sua rotina.';
+          recommendations = [
+            'Como montar pratos inteligentes sem pesar comida',
+            'Organização semanal rápida para quem não tem tempo',
+            'Substituições práticas para comer o que gosta sem engordar',
+            'Receitas fáceis para almoço, jantar e lanches rápidos',
+          ];
+        } else {
+          profile = 'Perfil: <span>Otimização e Consciência Alimentar</span>';
+          badge = '💚 86% de Compatibilidade';
+          description = 'Você já busca cuidar de você, mas quer evitar os erros comuns que impedem a perda de gordura. O Método Emagreça sem Culpa vai te ensinar a destravar seus resultados com leveza e sem extremismos.';
+          recommendations = [
+            'Os grandes mitos dos alimentos "fitness" que atrapalham você',
+            'Como acelerar seu metabolismo de forma natural e sem remédios',
+            'Ideias de receitas gostosas para variar a semana toda',
+          ];
+        }
+
+        // Greeting with name
+        const greetingEl = $('resultGreeting');
+        const recHeadingEl = $('recHeading');
+        if (userName) {
+          greetingEl.textContent = `Diagnóstico sob medida para ${userName}:`;
+          recHeadingEl.textContent = `O que preparamos para você, ${userName}:`;
+        } else {
+          greetingEl.textContent = 'Diagnóstico personalizado:';
+          recHeadingEl.textContent = 'Seu plano sob medida inclui:';
+        }
+
+        $('resultBadge').textContent = badge;
+        $('resultTitle').innerHTML = profile;
+        $('resultDescription').textContent = description;
+        $('scoreValue').textContent = percentage + '%';
+
+        const recContainer = $('recItems');
+        recContainer.innerHTML = '';
+        recommendations.forEach(rec => {
+          const div = document.createElement('div');
+          div.className = 'rec-item';
+          div.innerHTML = `<span class="rec-check">✓</span><span>${rec}</span>`;
+          recContainer.appendChild(div);
+        });
+
+        preserveUTMParameters();
+
+        showScreen(screenResult, 'fade-in');
+
+        // Start countdown timer (15 minutes)
+        startUrgencyTimer();
+
+        // Animate circular score
+        setTimeout(() => {
+          const circumference = 2 * Math.PI * 45; // ~282.74
+          const offset = circumference - (percentage / 100) * circumference;
+          $('scoreRingFill').style.strokeDashoffset = offset;
+        }, 200);
+
+        // Confetti celebration
+        launchConfetti();
+
+        // Track Lead in Facebook Pixel
+        if (typeof fbq === 'function') {
+          fbq('track', 'Lead', {
+            content_name: 'Quiz Emagreça sem Culpa',
+            user_name: userName || 'Anônimo',
+            value: 9.90,
+            currency: 'BRL'
+          });
+        }
+      }
+
+      /* ====== URGENCY COUNTDOWN TIMER ====== */
+      function startUrgencyTimer() {
+        if (countdownInterval) clearInterval(countdownInterval);
+
+        const STORAGE_KEY = 'esc_quiz_timer_end';
+        let endTime = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+        const DURATION = 15 * 60 * 1000; // 15 mins
+
+        if (!endTime || isNaN(endTime) || Date.now() >= endTime) {
+          endTime = Date.now() + DURATION;
+          localStorage.setItem(STORAGE_KEY, endTime.toString());
+        }
+
+        function updateTimer() {
+          const remaining = Math.max(0, endTime - Date.now());
+          const totalSec = Math.floor(remaining / 1000);
+          const mins = Math.floor(totalSec / 60);
+          const secs = totalSec % 60;
+
+          if (timerClock) {
+            timerClock.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+          }
+
+          if (remaining <= 0) {
+            clearInterval(countdownInterval);
+          }
+        }
+
+        updateTimer();
+        countdownInterval = setInterval(updateTimer, 1000);
+      }
+
+      /* ====== CONFETTI (CANVAS) ====== */
+      function launchConfetti() {
+        const canvas = $('confettiCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        ctx.scale(dpr, dpr);
+
+        const colors = ['#E8526A', '#F28090', '#C93A54', '#D4A054', '#FDE8EC', '#2ECC71', '#FFFFFF'];
+        const particles = [];
+        const count = 90;
+
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * -window.innerHeight * 0.5,
+            w: Math.random() * 9 + 5,
+            h: Math.random() * 6 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 3,
+            vy: Math.random() * 2.8 + 2.2,
+            rot: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 8,
+            opacity: 1,
+          });
+        }
+
+        let frame = 0;
+        const maxFrames = 160;
+
+        function draw() {
+          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          frame++;
+
+          if (frame > maxFrames * 0.75) {
+            particles.forEach(p => p.opacity = Math.max(0, p.opacity - 0.025));
+          }
+
+          particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.035;
+            p.rot += p.rotSpeed;
+            p.vx *= 0.99;
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.globalAlpha = p.opacity;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          });
+
+          if (frame < maxFrames) {
+            requestAnimationFrame(draw);
+          } else {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          }
+        }
+        draw();
+      }
+
+      /* ====== EVENT LISTENERS ====== */
+      $('btnStart').addEventListener('click', () => {
+        const rawName = userNameInput ? userNameInput.value.trim() : '';
+        if (rawName) {
+          userName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+        }
+
+        progressWrapper.style.display = 'block';
+        currentQ = 0;
+        showScreen(screenQuestion, 'slide-in-right');
+        renderQuestion();
+
+        if (typeof fbq === 'function') {
+          fbq('trackCustom', 'QuizStart', { user_name: userName || 'Anônimo' });
+        }
+      });
+
+      if (userNameInput) {
+        userNameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            $('btnStart').click();
+          }
+        });
+      }
+
+      btnBack.addEventListener('click', goBack);
+      btnNext.addEventListener('click', goNext);
+
+      // Track InitiateCheckout on CTA click
+      if (btnCTA) {
+        btnCTA.addEventListener('click', () => {
+          if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+              content_name: 'Método Emagreça sem Culpa',
+              user_name: userName || 'Anônimo',
+              value: 9.90,
+              currency: 'BRL'
+            });
+          }
+        });
+      }
+
+      // Keyboard navigation for desktop users
+      document.addEventListener('keydown', (e) => {
+        if (!screenQuestion.classList.contains('active')) return;
+        const key = e.key;
+        if (key >= '1' && key <= '4') {
+          selectOption(parseInt(key, 10) - 1);
+        } else if (key === 'a' || key === 'A') selectOption(0);
+        else if (key === 'b' || key === 'B') selectOption(1);
+        else if (key === 'c' || key === 'C') selectOption(2);
+        else if (key === 'd' || key === 'D') selectOption(3);
+        else if (key === 'Enter' && answers[currentQ] !== null) goNext();
+        else if (key === 'Backspace' || key === 'ArrowLeft') goBack();
+      });
+
+      window.addEventListener('resize', () => {
+        const c = $('confettiCanvas');
+        if (c) {
+          c.width = window.innerWidth;
+          c.height = window.innerHeight;
+        }
+      });
+
+      preserveUTMParameters();
+
+    })();
+  </script>
+
+</body>
+
+</html>
