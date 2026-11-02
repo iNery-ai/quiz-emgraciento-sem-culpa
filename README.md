@@ -8,3 +8,4 @@ Funil de vendas e quiz interativo de alta conversão para o método **Emagreça 
 - `oferta.html`: Página de vendas completa tradicional.
 - `logo/`: Ativos de marca, capa do e-book, fotos de alunas, criadora e capas dos order bumps.
 - `capi.js`: Integração com Meta Conversions API.
+
