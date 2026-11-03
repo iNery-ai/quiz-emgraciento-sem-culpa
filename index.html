@@ -2134,6 +2134,7 @@ src="https://www.facebook.com/tr?id=1738907107209455&ev=PageView&noscript=1"
       let answers = new Array(totalQuestions).fill(null);
       let autoAdvanceTimer = null;
       let countdownInterval = null;
+      let tracked50Progress = false;
 
       /* ====== DOM REFS ====== */
       const $ = id => document.getElementById(id);
@@ -2257,6 +2258,18 @@ src="https://www.facebook.com/tr?id=1738907107209455&ev=PageView&noscript=1"
 
         updateNextBtn();
         updateProgress();
+
+        // Dispara evento personalizado ao atingir 50% do quiz (pergunta 4 de 7)
+        if (currentQ === 3 && !tracked50Progress) {
+          tracked50Progress = true;
+          if (typeof fbq === 'function') {
+            fbq('trackCustom', 'QuizProgress_50', {
+              pergunta_atual: 4,
+              total_perguntas: totalQuestions,
+              user_name: userName || 'Anônimo'
+            });
+          }
+        }
       }
 
       /* ====== OPTION SELECTION ====== */
@@ -2460,11 +2473,30 @@ src="https://www.facebook.com/tr?id=1738907107209455&ev=PageView&noscript=1"
         // Confetti celebration
         launchConfetti();
 
-        // Track Lead in Facebook Pixel
+        // Track ViewContent no Meta Pixel (Diagnóstico e Oferta carregados)
         if (typeof fbq === 'function') {
+          fbq('track', 'ViewContent', {
+            content_name: 'Método Emagreça sem Culpa',
+            content_category: 'Quiz Result Offer',
+            content_type: 'product',
+            value: 9.90,
+            currency: 'BRL'
+          });
+        }
+
+        // Track Lead no Meta Pixel com parâmetros ricos e segmentados
+        if (typeof fbq === 'function') {
+          const ageAnswer = answers[0] !== null ? questions[0].options[answers[0]].text : 'Não informado';
+          const goalAnswer = answers[1] !== null ? questions[1].options[answers[1]].text : 'Não informado';
+          const cleanProfile = profile.replace(/<[^>]+>/g, '').replace('Perfil: ', '').trim();
+
           fbq('track', 'Lead', {
             content_name: 'Quiz Emagreça sem Culpa',
             user_name: userName || 'Anônimo',
+            faixa_etaria: ageAnswer,
+            meta_peso: goalAnswer,
+            perfil_alimentar: cleanProfile,
+            score_compatibilidade: percentage,
             value: 9.90,
             currency: 'BRL'
           });

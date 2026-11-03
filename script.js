@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   
   // ==========================================
   // 1. STICKY BAR VISIBILITY ON SCROLL
@@ -161,6 +161,20 @@
     }, 1000);
   }
 
+  // ==========================================
+  // 5. META PIXEL INITIATE CHECKOUT TRACKING
+  // ==========================================
+  document.querySelectorAll('a[href*="pay.hotmart.com"]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (typeof fbq === 'function') {
+        fbq('track', 'InitiateCheckout', {
+          content_name: 'Método Emagreça sem Culpa',
+          value: 9.90,
+          currency: 'BRL'
+        });
+      }
+    });
+  });
 
 });
 
